@@ -56,7 +56,8 @@ if __name__ == '__main__':
 	topo = __import__(module_name_from_file(options.custom))
 
 	print ("Initiating Mininet.")
-	net = Mininet(topo.topos[options.topo](), controller=RemoteController)
+	net = Mininet(topo.topos[options.topo](), controller=RemoteController, 
+		autoSetMacs = True, autoStaticArp = True)
 
 	print ("Initiating the Arbiter network.")
 	if (not connect_hosts_to_root_ns(net)):
