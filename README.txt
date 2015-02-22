@@ -105,5 +105,6 @@ Ans) FIB for ToR switch
 	   
 	   
 Note: In my topology I have defined host to be connected to switch via port 1 and interface is h*-eth1
+I have used Strawman approach to assign VLANS
  
 
