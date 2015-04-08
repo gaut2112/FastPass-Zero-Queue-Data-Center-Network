@@ -4,11 +4,13 @@ import os
 from scapy.all import *
 import re
 import time
+import shutil
 from datetime import datetime
 
 num_host = 16
 
-g_start_time = time.time()
+g_start_time = time.localtime()
+
 
 g_correctness_list = []
 g_throughput_list = []
@@ -43,7 +45,8 @@ def get_dump_stat(dump_file, spec, hostip):
     #global g_FCT_list
     #global g_correctness_list
     global g_stat
-
+    global g_start_time
+    
     p = re.compile("(\S*)\:(\S*)\:(\S*)")
     for flow in spec: 
         m = p.match(flow)
@@ -91,14 +94,15 @@ def get_dump_stat(dump_file, spec, hostip):
                     #print cmd
                     end = os.popen(cmd).read()
 
-                    starttime = datetime.strptime(start.split('.')[0] + '.' + start.split('.')[1][0:6],"%b  %d, %Y %H:%M:%S.%f")
-                    endtime = datetime.strptime(end.split('.')[0] + '.' + end.split('.')[1][0:6],"%b  %d, %Y %H:%M:%S.%f")
-                    
+                    #local time
+                    #starttime = datetime.strptime(start.split('.')[0] + '.' + start.split('.')[1][0:6],"%b  %d, %Y %H:%M:%S.%f")
+                    #endtime = datetime.strptime(end.split('.')[0] + '.' + end.split('.')[1][0:6],"%b  %d, %Y %H:%M:%S.%f")
+                    endtime = time.strptime(end.split('.')[0] + '.' + end.split('.')[1][0:6],"%b  %d, %Y %H:%M:%S.%f")
                     
                     #duration = (endtime-starttime).seconds*1.0 + (endtime-starttime).microseconds * 10.0/1000000
-
-                    epoch = datetime.utcfromtimestamp(0)
-                    delta = (endtime - epoch).total_seconds()
+                    delta = time.mktime(endtime) - time.mktime(g_start_time)
+                    #epoch = datetime.utcfromtimestamp(0)
+                    #delta = (endtime - epoch).total_seconds()
                     
                     g_stat[flow] = (byt, delta)
                     
@@ -166,16 +170,20 @@ def stat_summary(spec):
             #print "vlan: " + key+'\t'+ str(vlan) + '\t' + str(stat[key][vlan])
         flowsize = g_stat[key][0]
         finish_time = g_stat[key][1]
+
         if spec[key] == flowsize:
             result = "OK"
             g_correctness_list.append(1)
+            success = 1
         else:
             result = "Wrong flow size"
             g_correctness_list.append(0)
+            success = 0
 
             
-        if finish_time != 0:
-            FCT = finish_time - g_start_time
+        if finish_time != 0 and success == 1:
+            #FCT = finish_time - g_start_time
+            FCT = finish_time
             throughput = flowsize * 8.0 / (FCT)/ 1e6
         else:
             FCT = float('inf')
@@ -223,15 +231,25 @@ def dump_trace_analysis():
     print "=== Overall result ==="
     print "correct flows: " + str(sum(g_correctness_list))
     print "total flows: " + str(len(g_correctness_list))
+    
+
     if len(g_throughput_list) == 0:
         print "ave throughput: N/A"
+        ave_th = 0
     else:
-        print "ave throughput: " + str(sum(g_throughput_list)/len(g_throughput_list))
+        ave_th = sum(g_throughput_list)/len(g_throughput_list)
+        print "ave throughput: " + str(ave_th)
     if len(g_FCT_list) == 0:
+        tail_latency = 0
         print "tail FCT: N/A"
     else:
-        print "tail FCT: " + str(max(g_FCT_list))
-    
+        tail_latency = max(g_FCT_list)
+        print "tail FCT: " + str(tail_latency)
+
+    #use it for now
+    ave_size = 50
+    score = (ave_th / 1000 + ave_size * 8 / 1000 / tail_latency) * 100
+    print "score: ",score
 
     
 def kill_all_task():
@@ -266,11 +284,20 @@ if __name__=='__main__':
     print "Clear existing task..."
     kill_all_task()
 
+    if os.path.exists("dump"):
+        shutil.rmtree('dump')
+
+    if os.path.exists("logs"):
+        shutil.rmtree('logs')
+
     if not os.path.exists("dump"):
         os.makedirs("dump")
+    if not os.path.exists("logs"):
+        os.makedirs("logs")
     
     print "Starting Arbiter..."
-    cmd = "./arbiter >/dev/null 2>&1 &"
+    cmd = "./arbiter >logs/arbiter.log 2>&1 &"
+    print cmd
     os.system(cmd)
     
     print "Starting tcpdump..."
@@ -285,7 +312,7 @@ if __name__=='__main__':
     time.sleep(1)
     for hostid in range(1,num_host+1): 
         host = 'h' + str(hostid)
-        cmd = '~/mininet/util/m ' + host + ' ./cperf traffic/' + host + '.tr >/dev/null 2>&1 &'
+        cmd = '~/mininet/util/m ' + host + ' ./cperf traffic/' + host + '.tr > logs/cperf-' + host +'.log 2>&1 &'
         print cmd
         os.system(cmd)
 
