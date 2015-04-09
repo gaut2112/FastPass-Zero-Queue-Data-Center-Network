@@ -10,8 +10,8 @@ from datetime import datetime
 #
 num_host = 16
 
-g_start_time = time.localtime()
-
+#g_start_time = time.localtime()
+g_start_time = datetime.now()
 
 g_correctness_list = []
 g_throughput_list = []
@@ -101,13 +101,13 @@ def get_dump_stat(dump_file, spec, hostip):
 
                     #local time
                     #starttime = datetime.strptime(start.split('.')[0] + '.' + start.split('.')[1][0:6],"%b  %d, %Y %H:%M:%S.%f")
-                    #endtime = datetime.strptime(end.split('.')[0] + '.' + end.split('.')[1][0:6],"%b  %d, %Y %H:%M:%S.%f")
-                    endtime = time.strptime(end.split('.')[0] + '.' + end.split('.')[1][0:6],"%b  %d, %Y %H:%M:%S.%f")
+                    endtime = datetime.strptime(end.split('.')[0] + '.' + end.split('.')[1][0:6],"%b  %d, %Y %H:%M:%S.%f")
+                    #endtime = time.strptime(end.split('.')[0] + '.' + end.split('.')[1][0:6],"%b  %d, %Y %H:%M:%S.%f")
                     
                     #duration = (endtime-starttime).seconds*1.0 + (endtime-starttime).microseconds * 10.0/1000000
-                    delta = time.mktime(endtime) - time.mktime(g_start_time)
+                    #delta = time.mktime(endtime) - time.mktime(g_start_time)
                     #epoch = datetime.utcfromtimestamp(0)
-                    #delta = (endtime - epoch).total_seconds()
+                    delta = (endtime - g_start_time).total_seconds()
                     
                     g_stat[flow] = (byt, delta)
                     
@@ -323,8 +323,8 @@ if __name__=='__main__':
 
     #sleep sufficient amount of time
     #change the value in need
-    print "wait for all flows finished..."
-    time.sleep(120)
+    print "wait 300 seconds for all flows finished..."
+    time.sleep(300)
 
     print "Terminating all task..."
     kill_all_task()
