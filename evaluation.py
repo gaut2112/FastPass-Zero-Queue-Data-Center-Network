@@ -7,6 +7,7 @@ import time
 import shutil
 from datetime import datetime
 
+#
 num_host = 16
 
 g_start_time = time.localtime()
@@ -58,6 +59,10 @@ def get_dump_stat(dump_file, spec, hostip):
             #print dst,hostip
             if dst == hostip:
                 print "Analyzing trace for flow: " + src + " -> " + dst +":"+port
+                #if (os.path.exists(dump_file) == False):
+                #    print dumpfile + ' does not exists'
+                #    exit(1)
+                
                 cmd = 'sudo tcpdump vlan and dst ' + dst + ' and src ' + src + ' and dst port ' + port + ' -r ' + dump_file + ' -w dump/tmp.pcap > /dev/null 2>&1'
                 #print cmd
                 os.system(cmd)
@@ -267,7 +272,7 @@ def kill_all_task():
         os.system("sudo kill " + pid_all)
 
     
-    cmd = "ps -ef | grep \'cperf\|./arbiter\' | grep -v grep | awk \'{print $2}\'"
+    cmd = "ps -ef | grep \'cperf\|./arbiter\' | grep -v grep | grep -v network | awk \'{print $2}\'"
     pids = os.popen(cmd).read()
     pid_all = ""
     strs = pids.split('\n')
