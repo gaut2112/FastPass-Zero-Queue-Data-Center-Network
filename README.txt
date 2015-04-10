@@ -1,5 +1,15 @@
 ANS 1)
 
+--> raw_sockets.c : The raw socket code has been taken from 
+    1)https://austinmarton.wordpress.com/2011/09/14/sending-raw-ethernet-packets-from-a-specific-interface-in-c-on-linux/
+    2)https://gist.github.com/austinmarton/1922600
+    
+--> client.py : The integration of python and C is taken from this example from stack overflow:
+    http://stackoverflow.com/questions/4241415/import-c-function-into-python-program
+
+
+ANS 2)
+
 
 My Fast Pass agent is implemented in combination of python and c. Command parser and communication with Arbiter is coded
 in python socket. The code to generate and send packets is done in c raw sockets (code is takes from this library available :
