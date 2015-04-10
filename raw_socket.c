@@ -11,6 +11,13 @@
 #include <netinet/ip.h>
 #include <unistd.h>
 
+#define MY_DEST_MAC0	0xFF
+#define MY_DEST_MAC1	0xFF
+#define MY_DEST_MAC2	0xFF
+#define MY_DEST_MAC3	0xFF
+#define MY_DEST_MAC4	0xFF
+#define MY_DEST_MAC5	0xFF
+
 #define PORT "5000"
 #define MAXDATASIZE 100
 #define BUF_SIZ 1501
@@ -91,12 +98,12 @@ void send_packets(int src, int dest, int port, int vlan_id, int num_packet){
 	eh->ether_shost[3] = ((uint8_t *)&if_mac.ifr_hwaddr.sa_data)[3];
 	eh->ether_shost[4] = ((uint8_t *)&if_mac.ifr_hwaddr.sa_data)[4];
 	eh->ether_shost[5] = ((uint8_t *)&if_mac.ifr_hwaddr.sa_data)[5];
-	eh->ether_dhost[0] = 0xFF;
-	eh->ether_dhost[1] = 0xFF;
-	eh->ether_dhost[2] = 0xFF;
-	eh->ether_dhost[3] = 0xFF;
-	eh->ether_dhost[4] = 0xFF;
-	eh->ether_dhost[5] = 0xFF;
+	eh->ether_dhost[0] = MY_DEST_MAC0;
+	eh->ether_dhost[1] = MY_DEST_MAC1;
+	eh->ether_dhost[2] = MY_DEST_MAC2;
+	eh->ether_dhost[3] = MY_DEST_MAC3;
+	eh->ether_dhost[4] = MY_DEST_MAC4;
+	eh->ether_dhost[5] = MY_DEST_MAC5;
 	
 	eh->ether_type = htons(0x8100);
 	tx_len += sizeof(struct ether_header);
@@ -153,19 +160,19 @@ void send_packets(int src, int dest, int port, int vlan_id, int num_packet){
 	/* Address length*/
 	socket_address.sll_halen = ETH_ALEN;
 	/* Destination MAC */
-	socket_address.sll_addr[0] = 0xFF;
-	socket_address.sll_addr[1] = 0xFF;
-	socket_address.sll_addr[2] = 0xFF;
-	socket_address.sll_addr[3] = 0xFF;
-	socket_address.sll_addr[4] = 0xFF;
-	socket_address.sll_addr[5] = 0xFF;
+	socket_address.sll_addr[0] = MY_DEST_MAC0;
+	socket_address.sll_addr[1] = MY_DEST_MAC1;
+	socket_address.sll_addr[2] = MY_DEST_MAC2;
+	socket_address.sll_addr[3] = MY_DEST_MAC3;
+	socket_address.sll_addr[4] = MY_DEST_MAC4;
+	socket_address.sll_addr[5] = MY_DEST_MAC5;
 	 
 	/* Send packet */
 	int k = 0;
 	for(k = 0; k < num_packet; k++)
 	{
 		
-		usleep(120);
+		usleep(90);
 		if (sendto(sockfd, sendbuf, tx_len, 0, (struct sockaddr*)&socket_address, sizeof(struct sockaddr_ll)) < 0)
 		{
 			printf("Socket: Send failed\n");
