@@ -56,33 +56,20 @@ void send_packets(int src, int dest, int port, int vlan_id, int num_packet){
 	struct ether_header *eh = (struct ether_header *) sendbuf;
 	
 	struct sockaddr_ll socket_address;
-	char *interface;
-    char *intf;
-    interface = (char *) malloc(9);
-    intf = (char *) malloc(3);
-    memset(interface, 0, 9);
-    memset(intf, 0, 3);
-    strcat(interface, "h");
-    if(src < 10){
-            snprintf(intf, 2, "%d", src);
-            strncat(interface, intf, 2);
-    }
-    else if(src >= 10){
-            snprintf(intf, 3, "%d", src);
-            strncat(interface, intf, 3);
-    }
-    strcat(interface, "-eth0");
+	char iface[16][9]={"h1-eth0","h2-eth0","h3-eth0","h4-eth0","h5-eth0","h6-eth0","h7-eth0","h8-eth0","h9-eth0","h10-eth0","h11-eth0","h12-eth0","h13-eth0","h14-eth0","h15-eth0","h16-eth0"};
+	char * ifa ;
+        ifa=iface[src-1];
 	if ((sockfd = socket(AF_PACKET, SOCK_RAW, IPPROTO_RAW)) == -1) {
 		perror("socket");
 	}
 
 	memset(&if_idx, 0, sizeof(struct ifreq));
-	strncpy(if_idx.ifr_name, interface, strlen(interface));
+	strncpy(if_idx.ifr_name, ifa, strlen(ifa));
 	if (ioctl(sockfd, SIOCGIFINDEX, &if_idx) < 0)
     	perror("SIOCGIFINDEX");
 
     memset(&if_mac, 0, sizeof(struct ifreq));
-	strncpy(if_mac.ifr_name, interface, strlen(interface));
+	strncpy(if_mac.ifr_name, ifa, strlen(ifa));
 	if (ioctl(sockfd, SIOCGIFHWADDR, &if_mac) < 0)
     	perror("SIOCGIFHWADDR");
 
