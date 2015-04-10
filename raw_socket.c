@@ -65,7 +65,6 @@ void send_packets(int src, int dest, int port, int vlan_id, int num_packet){
     strcat(interface, "h");
     if(src < 10){
             snprintf(intf, 2, "%d", src);
-            //printf("%d - %s\n", src, intf);
             strncat(interface, intf, 2);
     }
     else if(src >= 10){
