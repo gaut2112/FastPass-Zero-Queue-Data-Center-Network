@@ -114,8 +114,6 @@ void send_packets(int src, int dest, int port, int vlan_id, int num_packet){
 	iph->id = htons(54321);
 	iph->ttl = 64; // hops
 	iph->protocol = 17; // UDP
-	/* Source IP address, can be spoofed */
-	//iph->saddr = inet_addr(inet_ntoa(((struct sockaddr_in *)&if_ip.ifr_addr)->sin_addr));
 	char *source_ip = (char *) malloc(11);
     source_ip=createIp(src);
 	
