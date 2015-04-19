@@ -182,7 +182,7 @@ class Analyzer:
         #there could be multiple reasons into this outcome
         #1. dump_file does not exists, meaning you fail to capture packets
         #2. the pcap format is wrong
-        if (len(info_list < 7)):
+        if (len(info_list) < 7):
             s_print(DBG_LEVEL['error'], 'dump file error in ' + dump_file)
             return 0, 0
         
@@ -228,7 +228,7 @@ class Analyzer:
         #there could be multiple reasons into this outcome
         #1. dump_file does not exists, meaning you fail to capture packets
         #2. the pcap format is wrong
-        if (len(info_list < 7)):
+        if (len(info_list) < 7):
             s_print(DBG_LEVEL['error'], 'dump file error in ' + dump_file)
             self.arbiter_stat[self.Host_name(hostid)] = 0
         else:
