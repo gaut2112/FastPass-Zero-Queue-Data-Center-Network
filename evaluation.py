@@ -212,7 +212,7 @@ class Analyzer:
             delay = (endtime - self.starttime).total_seconds()
             
 
-        return pkt, delay
+        return byt, delay
         
     def Arbiter_traffic(self, hostid):
         dump_ctrl = 'dump/' + self.Host_name(hostid) + '-ctrl.pcap'
@@ -286,7 +286,7 @@ class Analyzer:
             self.overall_stat['avr_goodput'] = self.overall_stat['avr_goodput'] / self.overall_stat['num_thr_sen_flow']
 
         if self.overall_stat['tail_FCT'] != 0:
-            self.score = self.overall_stat['avr_goodput'] + self.overall_stat['agg_size'] / self.overall_stat['tail_FCT']
+            self.overall_stat['score'] = self.overall_stat['avr_goodput'] + self.overall_stat['agg_size'] / self.overall_stat['tail_FCT']
         
     def Exam_arbiter(self):
         for host in self.arbiter_stat:
@@ -357,7 +357,7 @@ class Experimenter:
         time.sleep(1)
         
     def Dump_start(self):
-        for hostid in range(1,self.nhost):
+        for hostid in range(1,self.nhost+1):
             host = 'h' + str(hostid)
             command = '~/mininet/util/m ' + host + ' sudo tcpdump -i ' + host +'-eth0' + ' -n -s 64 -B 8192 -w dump/' + host + '.pcap > logs/dump-' + host + '.log 2>&1 &'
             
@@ -373,7 +373,7 @@ class Experimenter:
         time.sleep(1)
 
     def Traffic_start(self):
-        for hostid in range(1,self.nhost):
+        for hostid in range(1,self.nhost+1):
             host = 'h' + str(hostid)
             command = '~/mininet/util/m ' + host + ' ./cperf ' + self.trace_path + host + '.tr > logs/cperf-' + host +'.log 2>&1 &'
             s_print(DBG_LEVEL['info'],command)
