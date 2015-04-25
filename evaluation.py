@@ -28,6 +28,9 @@ NUM_HOST = 16
 #We use 60 sec in our web server
 WAIT_TIME = 60
 
+##debug only
+SMALL_WAIT = 3
+
 #Differentiate flow sensitivity on ports
 LATENCY_SENSITIVE_PORT = [5000,7000]
 THROUGHPUT_SENSITIVE_PORT = [5000, 6000]
@@ -354,7 +357,7 @@ class Experimenter:
         #do not want to kill your arbiter_network.py
         cmd("sudo pkill -9 -x arbiter > /dev/null 2>&1") 
         cmd("sudo killall -9 cperf > /dev/null 2>&1")
-        time.sleep(1)
+        time.sleep(SMALL_WAIT)
         
     def Dump_start(self):
         for hostid in range(1,self.nhost+1):
@@ -366,11 +369,11 @@ class Experimenter:
             command = '~/mininet/util/m ' + host + ' sudo tcpdump -i ' + host +'-eth1' + ' -n -s 64 -B 8192 -w dump/' + host + '-ctrl.pcap > logs/dump-' + host + '-ctrl.log 2>&1 &'
             s_print(DBG_LEVEL['info'], command)
             cmd(command)
-        time.sleep(1)
+        time.sleep(SMALL_WAIT)
 
     def Arbiter_start(self):
         cmd("./arbiter >logs/arbiter.log 2>&1 &")
-        time.sleep(1)
+        time.sleep(SMALL_WAIT)
 
     def Traffic_start(self):
         for hostid in range(1,self.nhost+1):
@@ -378,7 +381,7 @@ class Experimenter:
             command = '~/mininet/util/m ' + host + ' ./cperf ' + self.trace_path + host + '.tr > logs/cperf-' + host +'.log 2>&1 &'
             s_print(DBG_LEVEL['info'],command)
             cmd(command)
-        time.sleep(1)
+        time.sleep(SMALL_WAIT)
     
     def Execute(self):
         s_print(DBG_LEVEL['overall'], "Clear existing task...")
@@ -419,13 +422,20 @@ if __name__=='__main__':
             if key not in total_result:
                 total_result[key] = 0
             total_result[key] += result[key]
+
+    #you have the risk of getting 0 score if some flows are incorrect
+    total_flow = total_result['recv_incomplete'] + total_result['send_incomplete'] + total_result['flow_complete']
+    if total_flow != total_result['flow_complete']:
+        total_result['avr_goodput'] = 0
+        total_result['tail_FCT'] = 0
+        total_result['score'] = 0
         
     s_print(DBG_LEVEL['overall'], "=== Overall result ===")
     s_print(DBG_LEVEL['overall'],"hosts used arbiter: "+str(total_result['use_arbiter']))
     s_print(DBG_LEVEL['overall'], "incomplete send: "+str(total_result['send_incomplete']))
     s_print(DBG_LEVEL['overall'],"incomplete receive: "+str(total_result['recv_incomplete']))
     s_print(DBG_LEVEL['overall'],"correct flows: "+ str(total_result['flow_complete']))
-    s_print(DBG_LEVEL['overall'], "total flows: " + str(total_result['recv_incomplete']+total_result['send_incomplete']+total_result['flow_complete']))
+    s_print(DBG_LEVEL['overall'], "total flows: " + str(total_flow))
     s_print(DBG_LEVEL['overall'],"ave throughput: "+str(total_result['avr_goodput']))
     s_print(DBG_LEVEL['overall'], "tail FCT: "+str(total_result['tail_FCT']))
     s_print(DBG_LEVEL['overall'],"score: "+str(total_result['score']))
