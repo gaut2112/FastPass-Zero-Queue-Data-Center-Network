@@ -289,7 +289,7 @@ class Analyzer:
             self.overall_stat['avr_goodput'] = self.overall_stat['avr_goodput'] / self.overall_stat['num_thr_sen_flow']
 
         if self.overall_stat['tail_FCT'] != 0:
-            self.overall_stat['score'] = self.overall_stat['avr_goodput'] + self.overall_stat['agg_size'] / self.overall_stat['tail_FCT']
+            self.overall_stat['score'] = self.overall_stat['avr_goodput'] + self.overall_stat['agg_size'] * 8.0 / 1e6 / self.overall_stat['tail_FCT']
         
     def Exam_arbiter(self):
         for host in self.arbiter_stat:
