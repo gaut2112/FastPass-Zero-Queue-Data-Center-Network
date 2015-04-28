@@ -104,11 +104,13 @@ class Descriptor:
         return self.traffic
     
 class Analyzer:
-    def __init__(self, nhost,spec):
+    def __init__(self, nhost,spec, weight):
+        self.weight = weight
         self.starttime = 0
         self.nhost = nhost
         self.arbiter_stat = {}
         self.flow_stat = {}
+
         self.overall_stat = {'avr_goodput':0,
                              'num_thr_sen_flow':0,
                              'agg_size':0,
@@ -289,7 +291,7 @@ class Analyzer:
             self.overall_stat['avr_goodput'] = self.overall_stat['avr_goodput'] / self.overall_stat['num_thr_sen_flow']
 
         if self.overall_stat['tail_FCT'] != 0:
-            self.overall_stat['score'] = self.overall_stat['avr_goodput'] + self.overall_stat['agg_size'] * 8.0 / 1e6 / self.overall_stat['tail_FCT']
+            self.overall_stat['score'] = (self.overall_stat['avr_goodput'] + self.overall_stat['agg_size'] * 8.0 / 1e6 / self.overall_stat['tail_FCT']) * self.weight
         
     def Exam_arbiter(self):
         for host in self.arbiter_stat:
@@ -339,8 +341,13 @@ class Experimenter:
     def __init__(self, trace, nhost):
         self.trace_path = trace
         self.nhost = nhost
+        if 'perm' in trace:
+            self.weight = 1.0 / 15
+        else:
+            self.weight = 1.0
+
         self.descriptor = Descriptor(self.trace_path, self.nhost)
-        self.analyzer = Analyzer(self.nhost, self.descriptor.Get_traffic_spec())
+        self.analyzer = Analyzer(self.nhost, self.descriptor.Get_traffic_spec(), self.weight)
         self.start_time = 0
         
         if not os.path.exists("dump"):
@@ -387,14 +394,14 @@ class Experimenter:
         s_print(DBG_LEVEL['overall'], "Clear existing task...")
         self.Killtask()
         self.Cleanup()
-
-        self.start_time = datetime.now()
         
         s_print(DBG_LEVEL['overall'],"Starting Arbiter...")
         self.Arbiter_start()
 
         s_print(DBG_LEVEL['overall'],"Starting tcpdump...")
         self.Dump_start()
+        
+        self.start_time = datetime.now()
         
         s_print(DBG_LEVEL['overall'],"Starting traffic...")
         self.Traffic_start()
@@ -425,7 +432,7 @@ if __name__=='__main__':
 
     #you have the risk of getting 0 score if some flows are incorrect
     total_flow = total_result['recv_incomplete'] + total_result['send_incomplete'] + total_result['flow_complete']
-    if total_flow != total_result['flow_complete']:
+    if total_flow != total_result['flow_complete'] or total_result['use_arbiter'] < 94:
         total_result['avr_goodput'] = 0
         total_result['tail_FCT'] = 0
         total_result['score'] = 0
