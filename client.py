@@ -18,7 +18,7 @@ def send_packets(src, dest, port, ty):
     print v
     pth = str(os.getcwd())+"/library.so"
     if (ty.find('K')) != -1:
-        ctypes.CDLL(pth).sendPacket(v,int(ty.split('K')[0])*1.2,dest,src,port)
+        ctypes.CDLL(pth).sendPacket(v,int(ty.split('K')[0])*12,dest,src,port)
     if (ty.find('M')) != -1:
         #print "in m", (ty.split('M')[0])
         #for i in xrange (int(ty.split('M')[0])):
