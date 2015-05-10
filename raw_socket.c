@@ -158,7 +158,7 @@ void send_packets(int src, int dest, int port, int vlan_id, int num_packet){
 	for(k = 0; k < num_packet; k++)
 	{
 		
-		usleep(80);
+		usleep(60);
 		if (sendto(sockfd, sendbuf, tx_len, 0, (struct sockaddr*)&socket_address, sizeof(struct sockaddr_ll)) < 0)
 		{
 			printf("Socket: Send failed\n");
