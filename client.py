@@ -18,7 +18,7 @@ def send_packets(src, dest, port, ty):
     print v
     pth = str(os.getcwd())+"/library.so"
     if (ty.find('K')) != -1:
-        ctypes.CDLL(pth).sendPacket(v,int(ty.split('K')[0])*120,dest,src,port)
+        ctypes.CDLL(pth).sendPacket(v,int(ty.split('K')[0])*1.2,dest,src,port)
     if (ty.find('M')) != -1:
         #print "in m", (ty.split('M')[0])
         #for i in xrange (int(ty.split('M')[0])):
@@ -75,7 +75,7 @@ def start_client():#main function for input and output
     req=command_parser(inputfile)
     if ('false' in req):
         return
-    src = int(inputfile[inputfile.find('h')+1:inputfile.find(".")])
+    src = int(inputfile[inputfile.rfind('h')+1:inputfile.find(".")])
     t1 =threading.Thread(name="Client Thread",target=client_agent(req,src)) 
     t1.start()
     
