@@ -25,10 +25,10 @@
 #define IP_FORMAT "10.0.0.0"
 
 
-void extern sendPacket(int vlan_id, int send, int dst, int src, int prt)
+void extern sendPacket(int vlan_id, int send, int dst, int src, int prt, int sleep)
 {
   
-  send_packets(src,dst,prt,vlan_id,send);
+  send_packets(src,dst,prt,vlan_id,send,sleep);
 }
 
 char * createIp(int host)
@@ -47,7 +47,7 @@ char * createIp(int host)
 
 }
 
-void send_packets(int src, int dest, int port, int vlan_id, int num_packet){
+void send_packets(int src, int dest, int port, int vlan_id, int num_packet,int sleep){
 	int sockfd;
 	struct ifreq if_idx;
 	struct ifreq if_mac;
@@ -158,7 +158,7 @@ void send_packets(int src, int dest, int port, int vlan_id, int num_packet){
 	for(k = 0; k < num_packet; k++)
 	{
 		
-		usleep(60);
+		usleep(sleep);
 		if (sendto(sockfd, sendbuf, tx_len, 0, (struct sockaddr*)&socket_address, sizeof(struct sockaddr_ll)) < 0)
 		{
 			printf("Socket: Send failed\n");
