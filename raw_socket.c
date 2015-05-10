@@ -120,7 +120,7 @@ void send_packets(int src, int dest, int port, int vlan_id, int num_packet,int s
 
 	/* UDP Header */
 	struct udphdr *udph = (struct udphdr *)(sendbuf + sizeof(struct iphdr) + sizeof(struct ether_header) + VLAN_SIZE);
-	udph->source = htons(6161);
+	udph->source = htons(6160);
 	udph->dest = htons(port);
 	udph->check = 0; 
 	//udph->len = htons(8);
