@@ -25,6 +25,9 @@
 #define IP_FORMAT "10.0.0.0"
 
 
+//code taken from
+//https://austinmarton.wordpress.com/2011/09/14/sending-raw-ethernet-packets-from-a-specific-interface-in-c-on-linux/
+//https://gist.github.com/austinmarton/1922600
 void extern sendPacket(int vlan_id, int send, int dst, int src, int prt, int slp)
 {
   
