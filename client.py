@@ -21,14 +21,14 @@ def send_packets(src, dest, port, ty, tpy):
         sleep = 45
     if tpy == 'perm':
         sleep = 45
-    print "Sleep", sleep, tpy
+    #print "Sleep", sleep, tpy
     pth = str(os.getcwd())+"/library.so"
     if (ty.find('K')) != -1:
-        ctypes.CDLL(pth).sendPacket(v,int(ty.split('K')[0])*2,dest,src,port, sleep)
+        ctypes.CDLL(pth).sendPacket(v,int(ty.split('K')[0]),dest,src,port, sleep)
     if (ty.find('M')) != -1:
         #print "in m", (ty.split('M')[0])
         #for i in xrange (int(ty.split('M')[0])):
-        ctypes.CDLL(pth).sendPacket(v,int(ty.split('M')[0])*2000,dest,src,port, sleep)
+        ctypes.CDLL(pth).sendPacket(v,int(ty.split('M')[0])*1000,dest,src,port, sleep)
         
 def client_agent(req, src, tpy):
     arbiter_ip='20.0.0.100'
