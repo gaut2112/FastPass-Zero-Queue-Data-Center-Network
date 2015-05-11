@@ -28,7 +28,7 @@ def send_packets(src, dest, port, ty, tpy):
     if (ty.find('M')) != -1:
         #print "in m", (ty.split('M')[0])
         #for i in xrange (int(ty.split('M')[0])):
-        ctypes.CDLL(pth).sendPacket(v,int(ty.split('M')[0])*1000,dest,src,port, sleep)
+        ctypes.CDLL(pth).sendPacket(v,int(ty.split('M')[0]),dest,src,port, sleep)
         
 def client_agent(req, src, tpy):
     arbiter_ip='20.0.0.100'
