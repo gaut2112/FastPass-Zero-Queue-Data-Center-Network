@@ -16,11 +16,11 @@ def send_packets(src, dest, port, ty, tpy):
     global vlan
     v=vlan[dest][src]
     #print v
-    sleep = 60
-    if tpy == 'mix':
-        sleep = 45
-    if tpy == 'perm':
-        sleep = 45
+    sleep = 80
+    #if tpy == 'mix':
+    #    sleep = 45
+    #if tpy == 'perm':
+    #    sleep = 45
     #print "Sleep", sleep, tpy
     pth = str(os.getcwd())+"/library.so"
     if (ty.find('K')) != -1:
