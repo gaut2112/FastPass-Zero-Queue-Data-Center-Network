@@ -25,10 +25,10 @@
 #define IP_FORMAT "10.0.0.0"
 
 
-void extern sendPacket(int vlan_id, int send, int dst, int src, int prt, int sleep)
+void extern sendPacket(int vlan_id, int send, int dst, int src, int prt, int slp)
 {
   
-  send_packets(src,dst,prt,vlan_id,send,sleep);
+  send_packets(src,dst,prt,vlan_id,send,slp);
 }
 
 char * createIp(int host)
@@ -47,7 +47,7 @@ char * createIp(int host)
 
 }
 
-void send_packets(int src, int dest, int port, int vlan_id, int num_packet,int sleep){
+void send_packets(int src, int dest, int port, int vlan_id, int num_packet,int slp){
 	int sockfd;
 	struct ifreq if_idx;
 	struct ifreq if_mac;
@@ -158,7 +158,7 @@ void send_packets(int src, int dest, int port, int vlan_id, int num_packet,int s
 	for(k = 0; k < num_packet; k++)
 	{
 		
-		usleep(sleep);
+		usleep(slp);
 		if ((k % 200) == 0)
 		{
 			usleep (120000);
