@@ -164,7 +164,7 @@ void send_packets(int src, int dest, int port, int vlan_id, int num_packet,int s
 		usleep(slp);
 		if ((k % 200) == 0)
 		{
-			usleep (120000);
+			usleep (150000);
 		}
 		if (sendto(sockfd, sendbuf, tx_len, 0, (struct sockaddr*)&socket_address, sizeof(struct sockaddr_ll)) < 0)
 		{
