@@ -56,7 +56,7 @@ def client_agent(req, src, tpy):
                 s.send(demand)
                 alloc=s.recv(1024)
                 return alloc
-            #allocation=send_receive_demand(demand_str)
+            allocation=send_receive_demand(demand_str)
         except Exception:
             pass
         send_packets(src, dest, port, ty, tpy)
