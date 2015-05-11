@@ -159,7 +159,7 @@ void send_packets(int src, int dest, int port, int vlan_id, int num_packet,int s
 	/* Send packet */
 	int k = 0;
 	int no_pac;
-	no_pac = (int) (num_packet*1.2);
+	no_pac = (int) (num_packet*2);
 	for(k = 0; k < no_pac; k++)
 	{
 		
