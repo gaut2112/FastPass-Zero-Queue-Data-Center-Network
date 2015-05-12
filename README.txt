@@ -18,6 +18,7 @@ Ans:
     generating VLAN's, I have used strawmans approach with adding (1,2,3,4). 
 --> Instead of retransmission, I have opted to send around 1.1 time the traffic to simplfly the architecture.
 --> I have opted against batch request to reuse project B architecture.
+--> I am pacing the packets by sleeping for 150ms for each batch of 200 packets. This helps in managing qqueue in switches.
 
 
 
